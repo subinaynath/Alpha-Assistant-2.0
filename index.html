@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <link rel="icon" href=public/icon.jpg>
+  <title>Alpha Assistant v2.0 With AI
+  </title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body { 
+      font-family: 'Orbitron', 'Courier New', monospace; 
+      background: #0a0e27;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(0, 100, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(0, 150, 255, 0.2) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h80v80h-80z' fill='none' stroke='%23001a4d' stroke-width='0.5'/%3E%3Cpath d='M20 20h60v60h-60z' fill='none' stroke='%23001a4d' stroke-width='0.3'/%3E%3Cpath d='M30 30h40v40h-40z' fill='none' stroke='%23001a4d' stroke-width='0.2'/%3E%3C/svg%3E");
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      color: #00ff00;
+      touch-action: manipulation;
+    }
+
+    /* Circuit Board Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(90deg, transparent 98%, rgba(0, 150, 255, 0.1) 100%),
+        linear-gradient(0deg, transparent 98%, rgba(0, 150, 255, 0.1) 100%),
+        linear-gradient(45deg, transparent 49%, rgba(0, 255, 255, 0.1) 50%, transparent 51%);
+      background-size: 50px 50px, 50px 50px, 100px 100px;
+      animation: circuit-flow 20s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes circuit-flow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    /* Floating Tech Elements */
+    .tech-element {
+      position: absolute;
+      color: rgba(0, 255, 255, 0.3);
+      font-size: clamp(10px, 2vw, 12px);
+      font-family: 'Courier New', monospace;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .container { 
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      padding: 1rem;
+    }
+
+    .main-title {
+      font-size: clamp(1.5rem, 5vw, 3rem);
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 
+        0 0 10px #ffd700,
+        0 0 20px #ffd700,
+        0 0 30px #ffd700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      letter-spacing: 2px;
+      animation: title-glow 3s ease-in-out infinite alternate;
+      line-height: 1.2;
+    }
+
+    @keyframes title-glow {
+      from { text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffd700; }
+      to { text-shadow: 0 0 20px #ffd700, 0 0 30px #ffd700, 0 0 40px #ffd700; }
+    }
+
+    .display-box {
+      background: rgba(0, 100, 255, 0.8);
+      border: 2px solid #0066ff;
+      border-radius: 15px;
+      padding: 1.5rem;
+      min-height: 80px;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #00ff00;
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+      text-shadow: 0 0 10px #00ff00;
+      box-shadow: 
+        0 0 30px rgba(0, 102, 255, 0.5),
+        inset 0 0 20px rgba(0, 102, 255, 0.2);
+      backdrop-filter: blur(10px);
+      line-height: 1.4;
+    }
+
+    /* Central HUD Interface */
+    .hud-container {
+      position: relative;
+      width: min(90vw, 600px);
+      height: min(90vw, 600px);
+      margin: 1rem auto;
+      max-width: 600px;
+      max-height: 600px;
+    }
+
+    /* Outer Ring */
+    .outer-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 3px solid rgba(0, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: rotate-slow 30s linear infinite;
+    }
+
+    /* Middle Ring */
+    .middle-ring {
+      position: absolute;
+      top: 8%;
+      left: 8%;
+      width: 84%;
+      height: 84%;
+      border: 2px solid rgba(255, 255, 0, 0.4);
+      border-radius: 50%;
+      animation: rotate-medium 20s linear infinite reverse;
+    }
+
+    /* Inner Ring */
+    .inner-ring {
+      position: absolute;
+      top: 16%;
+      left: 16%;
+      width: 68%;
+      height: 68%;
+      border: 2px solid rgba(0, 255, 0, 0.5);
+      border-radius: 50%;
+      animation: rotate-fast 10s linear infinite;
+    }
+
+    @keyframes rotate-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes rotate-medium {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-360deg); }
+    }
+
+    @keyframes rotate-fast {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Central Button Container */
+    .central-buttons {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      gap: 10px;
+      z-index: 20;
+    }
+
+    /* Central Speak Button */
+    .central-button {
+      width: clamp(70px, 18vw, 100px);
+      height: clamp(70px, 18vw, 100px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, rgba(0, 100, 255, 0.8) 100%);
+      border: 3px solid #00ffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: clamp(0.7rem, 2.5vw, 1rem);
+      color: #ffffff;
+      font-weight: bold;
+      text-shadow: 0 0 10px #00ffff;
+      box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.7),
+        inset 0 0 20px rgba(0, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    /* Stop Button */
+    .stop-button {
+      width: clamp(60px, 15vw, 80px);
+      height: clamp(60px, 15vw, 80px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 0, 0, 0.3) 0%, rgba(150, 0, 0, 0.8) 100%);
+      border: 3px solid #ff0000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: clamp(0.6rem, 2vw, 0.8rem);
+      color: #ffffff;
+      font-weight: bold;
+      text-shadow: 0 0 10px #ff0000;
+      box-shadow: 
+        0 0 20px rgba(255, 0, 0, 0.7),
+        inset 0 0 15px rgba(255, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      touch-action: manipulation;
+      user-select: none;
+      opacity: 0.7;
+    }
+
+    .central-button:hover,
+    .central-button:active {
+      transform: scale(1.1);
+      box-shadow: 
+        0 0 50px rgba(0, 255, 255, 1),
+        inset 0 0 30px rgba(0, 255, 255, 0.5);
+    }
+
+    .stop-button:hover,
+    .stop-button:active {
+      transform: scale(1.1);
+      box-shadow: 
+        0 0 30px rgba(255, 0, 0, 1),
+        inset 0 0 20px rgba(255, 0, 0, 0.5);
+      opacity: 1;
+    }
+
+    .central-button.listening {
+      background: radial-gradient(circle, rgba(255, 0, 100, 0.3) 0%, rgba(255, 0, 0, 0.8) 100%);
+      border-color: #ff0066;
+      color: #ffffff;
+      animation: pulse-red 1s infinite;
+    }
+
+    .central-button.processing {
+      background: radial-gradient(circle, rgba(255, 255, 0, 0.3) 0%, rgba(255, 150, 0, 0.8) 100%);
+      border-color: #ffaa00;
+      color: #ffffff;
+      animation: pulse-orange 1s infinite;
+    }
+
+    @keyframes pulse-red {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes pulse-orange {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Command Positions Around Circle */
+    .command {
+      position: absolute;
+      color: #00ff00;
+      font-size: clamp(0.7rem, 2vw, 1rem);
+      font-weight: bold;
+      text-shadow: 0 0 10px #00ff00;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      width: clamp(80px, 20vw, 120px);
+      margin-left: clamp(-40px, -10vw, -60px);
+      padding: 0.5rem;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      touch-action: manipulation;
+      user-select: none;
+      line-height: 1.2;
+    }
+
+    .command:hover,
+    .command:active {
+      color: #ffffff;
+      text-shadow: 0 0 15px #00ff00;
+      transform: scale(1.05);
+      background: rgba(0, 255, 0, 0.1);
+      border-color: #00ff00;
+    }
+
+    /* Responsive Command Positions */
+    .cmd-1 { top: 5%; left: 50%; }
+    .cmd-2 { top: 15%; right: 15%; }
+    .cmd-3 { top: 35%; right: 5%; }
+    .cmd-4 { top: 55%; right: 10%; }
+    .cmd-5 { bottom: 15%; right: 15%; }
+    .cmd-6 { bottom: 5%; left: 50%; }
+    .cmd-7 { bottom: 15%; left: 15%; }
+    .cmd-8 { top: 55%; left: 10%; }
+    .cmd-9 { top: 35%; left: 5%; }
+    .cmd-10 { top: 15%; left: 15%; }
+
+    /* Status Indicators */
+    .status-panel {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #00ffff;
+      border-radius: 8px;
+      padding: 0.5rem;
+      color: #00ffff;
+      font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+      font-family: 'Courier New', monospace;
+      z-index: 100;
+    }
+
+    .network-panel {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #00ff00;
+      border-radius: 8px;
+      padding: 0.5rem;
+      color: #00ff00;
+      font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+      font-family: 'Courier New', monospace;
+      text-align: right;
+      z-index: 100;
+    }
+
+    .system-panel {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #ffd700;
+      border-radius: 8px;
+      padding: 0.5rem;
+      color: #ffd700;
+      font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+      font-family: 'Courier New', monospace;
+      z-index: 100;
+    }
+
+    .lock-icon {
+      position: fixed;
+      bottom: 15%;
+      right: 10%;
+      font-size: clamp(1.5rem, 5vw, 3rem);
+      color: rgba(0, 100, 255, 0.6);
+      animation: float 3s ease-in-out infinite;
+      z-index: 5;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .bottom-text {
+      text-align: center;
+      color: #00ffff;
+      margin-top: 1rem;
+      font-size: clamp(0.8rem, 2vw, 1.1rem);
+      padding: 0 1rem;
+      line-height: 1.4;
+    }
+
+    /* Auto-continue indicator */
+    .auto-continue-indicator {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      background: rgba(0, 255, 0, 0.1);
+      border: 1px solid #00ff00;
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      color: #00ff00;
+      font-size: 0.8rem;
+      font-family: 'Courier New', monospace;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+      text-align: center;
+    }
+
+    .auto-continue-indicator.show {
+      opacity: 1;
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0.5rem;
+        justify-content: flex-start;
+        padding-top: 2rem;
+      }
+
+      .main-title {
+        margin-bottom: 1rem;
+        padding: 0 0.5rem;
+      }
+
+      .display-box {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+      }
+
+      .hud-container {
+        margin: 0.5rem auto 1rem;
+      }
+
+      .central-buttons {
+        gap: 8px;
+      }
+
+      .command {
+        font-size: 0.7rem;
+        width: 70px;
+        margin-left: -35px;
+        padding: 0.3rem;
+      }
+
+      .system-panel,
+      .status-panel,
+      .network-panel {
+        font-size: 0.6rem;
+        padding: 0.3rem;
+      }
+
+      .lock-icon {
+        bottom: 20%;
+        right: 5%;
+      }
+
+      .bottom-text {
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+
+      .auto-continue-indicator {
+        right: 10px;
+        font-size: 0.7rem;
+        padding: 0.3rem 0.8rem;
+      }
+
+      /* Hide some tech elements on mobile for cleaner look */
+      .tech-element:nth-child(n+3) {
+        display: none;
+      }
+    }
+
+    /* Tablet Optimizations */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .hud-container {
+        width: 500px;
+        height: 500px;
+      }
+
+      .command {
+        font-size: 0.9rem;
+        width: 100px;
+        margin-left: -50px;
+      }
+    }
+
+    /* Large Desktop Optimizations */
+    @media (min-width: 1200px) {
+      .container {
+        padding: 2rem;
+      }
+
+      .main-title {
+        font-size: 3.5rem;
+      }
+
+      .display-box {
+        font-size: 1.3rem;
+        padding: 2rem;
+      }
+
+      .hud-container {
+        width: 700px;
+        height: 700px;
+      }
+
+      .central-button {
+        width: 120px;
+        height: 120px;
+        font-size: 1.1rem;
+      }
+
+      .stop-button {
+        width: 90px;
+        height: 90px;
+        font-size: 0.9rem;
+      }
+
+      .command {
+        font-size: 1.1rem;
+        width: 140px;
+        margin-left: -70px;
+      }
+    }
+
+    /* Touch-friendly improvements */
+    @media (hover: none) and (pointer: coarse) {
+      .command {
+        padding: 0.8rem 0.5rem;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .central-button {
+        min-width: 70px;
+        min-height: 70px;
+      }
+
+      .stop-button {
+        min-width: 60px;
+        min-height: 60px;
+      }
+    }
+
+    /* Landscape mobile orientation */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .container {
+        flex-direction: row;
+        align-items: center;
+        padding: 0.5rem;
+      }
+
+      .main-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .hud-container {
+        width: 300px;
+        height: 300px;
+        margin: 0.5rem;
+      }
+
+      .display-box {
+        margin-bottom: 1rem;
+        max-width: 400px;
+      }
+
+      .command {
+        font-size: 0.6rem;
+        width: 60px;
+        margin-left: -30px;
+      }
+
+      .central-button {
+        width: 50px;
+        height: 50px;
+        font-size: 0.7rem;
+      }
+
+      .stop-button {
+        width: 40px;
+        height: 40px;
+        font-size: 0.6rem;
+      }
+    }
+
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .command,
+      .central-button,
+      .stop-button {
+        border-width: 2px;
+      }
+    }
+
+    /* Reduced motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .outer-ring,
+      .middle-ring,
+      .inner-ring,
+      .lock-icon {
+        animation: none;
+      }
+
+      .title-glow {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Tech Elements -->
+  <div class="tech-element" style="top: 10%; left: 5%;">HUD</div>
+  <div class="tech-element" style="top: 15%; right: 10%;">NETWARE</div>
+  <div class="tech-element" style="bottom: 30%; left: 8%;">The Audio Spotlight</div>
+  <div class="tech-element" style="bottom: 25%; left: 8%;">UI Waiting</div>
+
+  <!-- System Panels -->
+  <div class="system-panel">
+    <div>INITIATING SYSTEM 1.0...</div>
+    <div>LOADING MODULES...</div>
+    <div>AI CORE: ACTIVE</div>
+  </div>
+
+  <div class="status-panel">
+    <div>STATUS: ONLINE</div>
+    <div>VOICE: READY</div>
+    <div>AI: CONNECTED</div>
+  </div>
+
+  <div class="network-panel">
+    <div>NETWARE: 192.168.1.1</div>
+    <div>ENCRYPTION: AES-256</div>
+    <div>UPTIME: 99.9%</div>
+  </div>
+
+  <!-- Auto-continue indicator -->
+  <div class="auto-continue-indicator" id="autoContinueIndicator">
+    <div>🔄 AUTO-CONTINUE</div>
+    <div>Ready for next command</div>
+  </div>
+
+  <!-- Lock Icon -->
+  <div class="lock-icon">🔒</div>
+
+  <div class="container">
+    <h1 class="main-title">Hello, I'm Alpha, Your Digital assistant</h1>
+
+    <div class="display-box" id="display">
+      Please Give command by clicking "Speak" button...
+    </div>
+
+    <!-- Central HUD Interface -->
+    <div class="hud-container">
+      <!-- Rotating Rings -->
+      <div class="outer-ring"></div>
+      <div class="middle-ring"></div>
+      <div class="inner-ring"></div>
+
+      <!-- Central Buttons -->
+      <div class="central-buttons">
+        <div class="central-button" id="speakButton">
+          <span id="buttonText">Speak</span>
+        </div>
+        <div class="stop-button" id="stopButton">
+          <span>Stop</span>
+        </div>
+      </div>
+
+      <!-- Commands Around Circle -->
+      <div class="command cmd-1" onclick="executeCommand('introduce yourself')">Introduce yourself</div>
+      <div class="command cmd-2" onclick="executeCommand('open gmail')">Open Gmail</div>
+      <div class="command cmd-3" onclick="executeCommand('open youtube')">Open YouTube</div>
+      <div class="command cmd-4" onclick="executeCommand('open google')">Open Google</div>
+      <div class="command cmd-5" onclick="executeCommand('open facebook')">Open Facebook</div>
+      <div class="command cmd-6" onclick="executeCommand('tell me a joke')">Tell a Joke</div>
+      <div class="command cmd-7" onclick="executeCommand('open twitter')">Open Twitter</div>
+      <div class="command cmd-8" onclick="executeCommand('open instagram')">Open Instagram</div>
+      <div class="command cmd-9" onclick="executeCommand('how are you')">How are you</div>
+      <div class="command cmd-10" onclick="executeCommand('tell me about your creator')">Tell me about your creator</div>
+    </div>
+
+    <div class="bottom-text">
+      Here are some commands that you can use.
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
